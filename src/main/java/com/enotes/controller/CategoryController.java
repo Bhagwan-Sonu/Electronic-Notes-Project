@@ -21,6 +21,7 @@ import com.enotes.entity.Category;
 import com.enotes.exception.ResourceNotFoundException;
 import com.enotes.service.CategoryService;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
