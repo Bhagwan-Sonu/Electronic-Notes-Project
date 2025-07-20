@@ -99,9 +99,9 @@ public class CategoryServiceImpl implements CategoryService {
 		Category category = categoryRepo.findByIdAndIsDeletedFalse(id)
 				.orElseThrow(() -> new ResourceNotFoundException("Category not found with id "+id));
 		if(ObjectUtils.isEmpty(category)) {
-			return mapper.map(category, CategoryDto.class);
+			return null;
 		}
-		return null;
+		return mapper.map(category, CategoryDto.class);
 	}
 
 	@Override
