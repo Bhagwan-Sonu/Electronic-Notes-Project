@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 import com.enotes.dto.CategoryDto;
 import com.enotes.dto.CategoryResponse;
 import com.enotes.entity.Category;
+import com.enotes.exception.ExistDataException;
 import com.enotes.exception.ResourceNotFoundException;
 import com.enotes.repository.CategoryRepository;
 import com.enotes.service.CategoryService;
@@ -34,6 +35,13 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		//Validation checking
 		validation.categoryValidation(categoryDto);
+		
+		//check category exist or not
+		Boolean exist = categoryRepo.existsByName(categoryDto.getName().trim());
+		if(exist) {
+			//throw error
+			throw new ExistDataException("Category already exist");
+		}
 
 //		Category category = new Category();
 //		category.setName(categoryDto.getName());
@@ -44,8 +52,8 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		if(ObjectUtils.isEmpty(category.getId())) {
 			category.setIsDeleted(false);
-			category.setCreatedBy(1);
-			category.setCreatedOn(new Date());
+//			category.setCreatedBy(1);
+//			category.setCreatedOn(new Date());
 		}else {
 			updateCategory(category);
 		}
@@ -66,8 +74,8 @@ public class CategoryServiceImpl implements CategoryService {
 			category.setCreatedOn(existCategory.getCreatedOn());
 			category.setIsDeleted(existCategory.getIsDeleted());
 			
-			category.setUpdatedBy(1);
-			category.setUpdatedOn(new Date());
+//			category.setUpdatedBy(1);
+//			category.setUpdatedOn(new Date());
 		}
 	}
 
