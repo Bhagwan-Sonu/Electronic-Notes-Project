@@ -14,12 +14,16 @@ import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.enotes.dto.NotesDto;
 import com.enotes.dto.NotesDto.CategoryDto;
+import com.enotes.dto.NotesDto.FilesDto;
+import com.enotes.dto.NotesResponse;
 import com.enotes.entity.FileDetails;
 import com.enotes.entity.Notes;
 import com.enotes.exception.ResourceNotFoundException;
@@ -53,6 +57,11 @@ public class NotesServiceImpl implements NotesService {
 
 		ObjectMapper ob = new ObjectMapper();
 		NotesDto notesDto = ob.readValue(notes, NotesDto.class);
+		
+		//update if id is given in request
+		if(!ObjectUtils.isEmpty(notesDto)) {
+			updateNotes(notesDto, file);
+		}
 
 		// validation category
 		checkCategoryExist(notesDto.getCategory());
@@ -64,7 +73,9 @@ public class NotesServiceImpl implements NotesService {
 		if (!ObjectUtils.isEmpty(fileDtls)) {
 			notesMap.setFileDetails(fileDtls);
 		} else {
-			notesMap.setFileDetails(null);
+			if(ObjectUtils.isEmpty(notesDto)) {
+				notesMap.setFileDetails(null);
+			}
 		}
 
 		Notes saveNotes = notesRepo.save(notesMap);
@@ -72,6 +83,17 @@ public class NotesServiceImpl implements NotesService {
 			return true;
 		}
 		return false;
+	}
+
+	private void updateNotes(NotesDto notesDto, MultipartFile file) throws Exception {
+
+		Notes existNotes = notesRepo.findById(notesDto.getId())
+		.orElseThrow(()-> new ResourceNotFoundException("Invalid notes id"));
+		
+		//user not choose any file at update time
+		if(ObjectUtils.isEmpty(file)) {
+			notesDto.setFileDetails(mapper.map(existNotes.getFileDetails(), FilesDto.class));
+		}
 	}
 
 	private FileDetails saveFileDetails(MultipartFile file) throws IOException {
@@ -152,5 +174,26 @@ public class NotesServiceImpl implements NotesService {
 				.orElseThrow(() -> new ResourceNotFoundException("File not found!"));
 		return fileDtls;
 	}
+
+	@Override
+	public NotesResponse getAllNotesByUser(Integer userId, Integer pageNo, Integer pageSize) {
+		//10 - 5,5 - 2 pages
+		org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNo, pageSize);
+		Page<Notes> pageNotes = notesRepo.findByCreatedBy(userId, pageable);
+		
+		List<NotesDto> notesDto = pageNotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
+		NotesResponse notes = NotesResponse.builder()
+				.notes(notesDto)
+				.pageNo(pageNotes.getNumber())
+				.pageSize(pageNotes.getSize())
+				.totalElements(pageNotes.getTotalElements())
+				.totalPages(pageNotes.getTotalPages())
+				.isFirst(pageNotes.isFirst())
+				.isLast(pageNotes.isLast())
+				.build();
+		return notes;
+	}
+	
+	
 
 }
