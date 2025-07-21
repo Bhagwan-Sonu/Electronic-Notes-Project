@@ -1,5 +1,6 @@
 package com.enotes.exception;
 
+import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,13 @@ public class GlobalExceptionHandler {
 		log.error("GlobalExceptionHandler :: handleExistDataException ::", e.getMessage());
 //		return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
 		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(FileNotFoundException.class)
+	public ResponseEntity<?> handleFileNotFoundException(FileNotFoundException e){
+		log.error("GlobalExceptionHandler :: handleFileNotFoundException ::", e.getMessage());
+//		return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

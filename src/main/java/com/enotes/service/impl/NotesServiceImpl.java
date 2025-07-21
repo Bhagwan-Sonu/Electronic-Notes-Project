@@ -1,7 +1,9 @@
 package com.enotes.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class NotesServiceImpl implements NotesService {
+
 
 	@Autowired
 	private NotesRepository notesRepo;
@@ -132,6 +135,22 @@ public class NotesServiceImpl implements NotesService {
 	@Override
 	public List<NotesDto> getAllNotes() {
 		return notesRepo.findAll().stream().map(note -> mapper.map(note, NotesDto.class)).toList();
+	}
+
+	@Override
+	public byte[] downloadFile(FileDetails fileDetails) throws Exception {
+		
+		
+		InputStream io = new FileInputStream(fileDetails.getPath());
+		
+		return org.springframework.util.StreamUtils.copyToByteArray(io);
+	}
+	
+	@Override
+	public FileDetails getFileDetails(Integer id) throws Exception {
+		FileDetails fileDtls = fileRepo.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("File not found!"));
+		return fileDtls;
 	}
 
 }
