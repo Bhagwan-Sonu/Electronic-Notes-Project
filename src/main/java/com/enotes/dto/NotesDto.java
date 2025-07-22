@@ -29,9 +29,13 @@ public class NotesDto {
 	private Integer updatedBy;
 
 	private Date updatedOn;
-	
+
 	private FilesDto fileDetails;
-	
+
+	private Boolean isDeleted;
+
+	private java.util.Date deletedOn;
+
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Getter
@@ -39,9 +43,9 @@ public class NotesDto {
 	public static class FilesDto {
 		private Integer id;
 		private String originalFileName;
-		private String displayFileName;	
-		}
-	
+		private String displayFileName;
+	}
+
 	@AllArgsConstructor
 	@NoArgsConstructor
 	@Getter
