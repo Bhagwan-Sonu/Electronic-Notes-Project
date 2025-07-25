@@ -36,6 +36,8 @@ public class User {
 	
 	private String email;
 	
+	private String password;
+	
 	private String mobNo;
 
 	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

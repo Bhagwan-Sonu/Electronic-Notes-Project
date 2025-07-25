@@ -3,18 +3,27 @@ package com.enotes.service.impl;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.enotes.config.security.CustomUserDetails;
 import com.enotes.dto.EmailRequest;
+import com.enotes.dto.LoginRequest;
+import com.enotes.dto.LoginResponse;
 import com.enotes.dto.UserDto;
 import com.enotes.entity.AccountStatus;
 import com.enotes.entity.Role;
 import com.enotes.entity.User;
 import com.enotes.repository.RoleRepository;
 import com.enotes.repository.UserRepository;
+import com.enotes.service.JWTService;
 import com.enotes.service.UserService;
 import com.enotes.util.Validation;
 
@@ -36,6 +45,15 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private EmailService emailService;
 	
+	@Autowired
+	private AuthenticationManager authenticationManager;
+	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JWTService jwtService;
+	
 	@Override
 	public Boolean register(UserDto userDto, String url) throws Exception {
 
@@ -48,7 +66,7 @@ public class UserServiceImpl implements UserService{
 				.varificationCode(UUID.randomUUID().toString())
 				.build();
 		user.setStatus(status);
-		
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		User saveUser = userRepo.save(user);
 		if(!ObjectUtils.isEmpty(saveUser)) {
 			
@@ -86,5 +104,25 @@ public class UserServiceImpl implements UserService{
 		List<Role> roles = roleRepo.findAllById(reqRoleId);
 		user.setRole(roles);
 	}
+
+	@Override
+	public LoginResponse login(LoginRequest loginRequest) {
+
+		Authentication authenticate = authenticationManager.authenticate(new 
+				UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+		 if(authenticate.isAuthenticated()) {
+			 CustomUserDetails customUserDetails = 
+					 (CustomUserDetails)authenticate.getPrincipal();
+			 String token= jwtService.generateToken(customUserDetails.getUser());
+			 LoginResponse loginResponse = LoginResponse.builder()
+					 .user(mapper.map(customUserDetails.getUser(), UserDto.class))
+					 .token(token)
+					 .build();
+			 return loginResponse;
+		 }
+		return null;
+	}
+	
+	
 
 }
