@@ -36,8 +36,15 @@ Spring:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable:
+          starttls:
+            enable: true
+springdoc: 
+  swagger-ui: 
+    operationsSorter: method
+    tags-sorter: alpha
+    path: /enotes-doc
+  api-docs:
+    path: /enotes-api-doc
        
 file:
   upload:
@@ -75,8 +82,8 @@ spring:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable:
+          starttls:
+            enable: true
        
 file:
   upload:
@@ -114,8 +121,8 @@ spring:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable:
+          starttls:
+            enable: true
        
 file:
   upload:
@@ -153,8 +160,8 @@ spring:
       mail:
         smtp:
           auth: true
-        starttls:
-          enable:
+          starttls:
+            enable: true
        
 file:
   upload:

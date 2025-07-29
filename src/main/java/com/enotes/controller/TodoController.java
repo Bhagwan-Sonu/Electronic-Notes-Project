@@ -15,19 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.enotes.dto.TodoDto;
+import com.enotes.endpoint.TodoEndpoint;
 import com.enotes.service.TodoService;
 import com.enotes.util.CommonUtil;
 
 @RestController
-@RequestMapping("api/v1/todo")
-public class TodoController {
+public class TodoController implements TodoEndpoint {
 
 	@Autowired
 	private TodoService todoService;
 	
-	@PostMapping("/")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> saveTodo(@RequestBody TodoDto todoDto) throws Exception{
+	@Override
+	public ResponseEntity<?> saveTodo(TodoDto todoDto) throws Exception{
 		Boolean saveTodo = todoService.saveTodo(todoDto);
 		if(saveTodo) {
 			return CommonUtil.createBuildResponseMessage("To do saved successfully,", HttpStatus.CREATED);
@@ -35,15 +34,13 @@ public class TodoController {
 		return CommonUtil.createErrorResponseMessage("Todo not saved", HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@GetMapping("/{id}")
-	@PreAuthorize("hasRole('USER')")
-	public ResponseEntity<?> getTodoById(@PathVariable Integer id) throws Exception{
+	@Override
+	public ResponseEntity<?> getTodoById(Integer id) throws Exception{
 		TodoDto todoDto= todoService.getTodoById(id);
 		return CommonUtil.createBuildResponse(todoDto, HttpStatus.OK);
 	}
 	
-	@GetMapping("/list")
-	@PreAuthorize("hasRole('USER')")
+	@Override
 	public ResponseEntity<?> getAllTodoByUser(){
 		List<TodoDto> todo = todoService.getTodoByUser();
 		if(CollectionUtils.isEmpty(todo)) {

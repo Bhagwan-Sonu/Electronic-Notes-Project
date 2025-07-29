@@ -12,7 +12,9 @@ import com.enotes.entity.User;
 import com.enotes.handler.GenericResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class CommonUtil {
 
 	public static ResponseEntity<?> createBuildResponse(Object data, HttpStatus status) {

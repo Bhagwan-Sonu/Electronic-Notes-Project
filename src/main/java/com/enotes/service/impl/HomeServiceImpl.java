@@ -9,6 +9,9 @@ import com.enotes.exception.SuccessException;
 import com.enotes.repository.UserRepository;
 import com.enotes.service.HomeService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class HomeServiceImpl implements HomeService{
 
@@ -17,6 +20,7 @@ public class HomeServiceImpl implements HomeService{
 	
 	@Override
 	public Boolean verifyAccount(Integer userId, String verificationCode) throws Exception {
+		log.info("HomeServiceImpl: verifyUserAccountServiceImpl() : start");
 		User user = userRepo.findById(userId).orElseThrow(() -> new ResourceNotFoundException("Invalid User"));
 		
 		if(user.getStatus().getVarificationCode()==null) {
@@ -30,6 +34,7 @@ public class HomeServiceImpl implements HomeService{
 			userRepo.save(user);
 			return true;
 		}
+		log.info("HomeServiceImpl: verifyUserAccountServiceImpl() : End");
 		return false;
 	}
 
