@@ -30,7 +30,7 @@ Spring:
   mail:
     host: smtp.gmail.com
     username: bhagwansingh760@gmail.com
-    password: xpqx jonj keyl biqo
+    password: 
     port: 587
     properties:
       mail:
@@ -69,7 +69,7 @@ spring:
   mail:
     host: smtp.gmail.com
     username: bhagwansingh760@gmail.com
-    password: xpqx jonj keyl biqo
+    password: 
     port: 587
     properties:
       mail:
@@ -108,7 +108,7 @@ spring:
   mail:
     host: smtp.gmail.com
     username: bhagwansingh760@gmail.com
-    password: xpqx jonj keyl biqo
+    password: 
     port: 587
     properties:
       mail:
@@ -147,7 +147,7 @@ spring:
   mail:
     host: smtp.gmail.com
     username: bhagwansingh760@gmail.com
-    password: xpqx jonj keyl biqo
+    password: 
     port: 587
     properties:
       mail:
