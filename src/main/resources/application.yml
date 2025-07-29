@@ -1,0 +1,170 @@
+spring: 
+  application:
+   name: Enotes_API_Service
+  profiles : 
+    active : dev
+...  
+#  ---
+#  Dev config
+---
+Spring: 
+  config: 
+    activate: 
+      on-profile: dev    
+  datasource:
+     url: jdbc:mysql://localhost:3306/enotes_dev
+     driver-class-name: com.mysql.cj.jdbc.Driver
+     username: root
+     password: root
+  jpa:
+     properties:
+       hibernate:
+         dialect: org.hibernate.dialect.MySQL8Dialect
+     hibernate:
+       ddl-auto: none
+  servlet:
+     multipart:
+       max-file-size: 100MB
+       max-request-size: 100MB
+       
+  mail:
+    host: smtp.gmail.com
+    username: bhagwansingh760@gmail.com
+    password: xpqx jonj keyl biqo
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable:
+       
+file:
+  upload:
+    path: notes/
+    
+...
+#  Prod config
+---
+spring: 
+  config: 
+    activate: 
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://localhost:3306/enotes_prod
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+       
+  mail:
+    host: smtp.gmail.com
+    username: bhagwansingh760@gmail.com
+    password: xpqx jonj keyl biqo
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable:
+       
+file:
+  upload:
+    path: notes/    
+...
+
+#  UAT config
+---
+spring: 
+  config: 
+    activate: 
+      on-profile: uat
+  datasource:
+    url: jdbc:mysql://localhost:3306/enotes_uat
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+       
+  mail:
+    host: smtp.gmail.com
+    username: bhagwansingh760@gmail.com
+    password: xpqx jonj keyl biqo
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable:
+       
+file:
+  upload:
+    path: notes/    
+...
+
+#  test config
+---
+spring: 
+  config: 
+    activate: 
+      on-profile: test
+  datasource:
+    url: jdbc:mysql://localhost:3306/enotes_test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: none
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+       
+  mail:
+    host: smtp.gmail.com
+    username: bhagwansingh760@gmail.com
+    password: xpqx jonj keyl biqo
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+        starttls:
+          enable:
+       
+file:
+  upload:
+    path: notes/    
+...
+
+
+     
+     
+     
+     
+     
+     

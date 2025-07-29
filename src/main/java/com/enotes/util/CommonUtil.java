@@ -4,7 +4,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.enotes.config.security.CustomUserDetails;
+import com.enotes.dto.UserResponse;
+import com.enotes.entity.User;
 import com.enotes.handler.GenericResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,8 +77,22 @@ public class CommonUtil {
 	}
 
 	public static String getUrl(HttpServletRequest request) {
-		String apiUrl = request.getRequestURI().toString();  //https://localhot:8080/api/v1/auth
+		String apiUrl = request.getRequestURL().toString();  //https://localhot:8080/api/v1/auth
 		apiUrl = apiUrl.replace(request.getServletPath(), "");// https://localhost:8080
 		return apiUrl;
 	}
+	
+	public static User getLoggedInUser() {
+		try {
+		CustomUserDetails logUser = (CustomUserDetails) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		
+		return logUser.getUser();
+		}catch (Exception e) {
+			throw e;
+		}
+	}
+	
+	
+	
 }

@@ -1,6 +1,7 @@
 package com.enotes.exception;
 
 import java.io.FileNotFoundException;
+import java.nio.file.AccessDeniedException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,18 +31,25 @@ public class GlobalExceptionHandler {
 		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException e){
+		log.error("GlobalExceptionHandler :: handleAccessDeniedException ::", e.getMessage());
+//		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.FORBIDDEN);
+	}
+	
 	@ExceptionHandler(SuccessException.class)
 	public ResponseEntity<?> handleSuccessException(SuccessException e){
 		log.error("GlobalExceptionHandler :: handleSuccessException ::", e.getMessage());
 //		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.OK);
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.OK);
 	}
 	
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException e){
 		log.error("GlobalExceptionHandler :: handleBadCredentialsException ::", e.getMessage());
 //		return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-		return CommonUtil.createBuildResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
+		return CommonUtil.createErrorResponseMessage(e.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(IllegalArgumentException.class)

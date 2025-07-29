@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -38,6 +39,7 @@ import com.enotes.repository.FavouriteNoteRepository;
 import com.enotes.repository.FileRepository;
 import com.enotes.repository.NotesRepository;
 import com.enotes.service.NotesService;
+import com.enotes.util.CommonUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -187,10 +189,26 @@ public class NotesServiceImpl implements NotesService {
 	}
 
 	@Override
-	public NotesResponse getAllNotesByUser(Integer userId, Integer pageNo, Integer pageSize) {
+	public NotesResponse getAllNotesByUser(Integer pageNo, Integer pageSize) {
+		Integer userId = CommonUtil.getLoggedInUser().getId();
 		// 10 - 5,5 - 2 pages
 		org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Notes> pageNotes = notesRepo.findByCreatedByAndIsDeletedFalse(userId, pageable);
+
+		List<NotesDto> notesDto = pageNotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
+		NotesResponse notes = NotesResponse.builder().notes(notesDto).pageNo(pageNotes.getNumber())
+				.pageSize(pageNotes.getSize()).totalElements(pageNotes.getTotalElements())
+				.totalPages(pageNotes.getTotalPages()).isFirst(pageNotes.isFirst()).isLast(pageNotes.isLast()).build();
+		return notes;
+	}
+	
+	
+
+	@Override
+	public NotesResponse getNotesByUserSearch(Integer pageNo, Integer pageSize, String keyword) {
+		Integer userId = CommonUtil.getLoggedInUser().getId();
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		Page<Notes> pageNotes = notesRepo.searchNotes(keyword, userId, pageable);
 
 		List<NotesDto> notesDto = pageNotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();
 		NotesResponse notes = NotesResponse.builder().notes(notesDto).pageNo(pageNotes.getNumber())
@@ -219,16 +237,16 @@ public class NotesServiceImpl implements NotesService {
 	}
 
 	@Override
-	public List<NotesDto> getUserRecycleBinNotes(Integer id) {
-		List<Notes> recycleNotes = notesRepo.findByCreatedByAndIsDeletedTrue(id);
+	public List<NotesDto> getUserRecycleBinNotes() {
+		Integer userId = CommonUtil.getLoggedInUser().getId();
+		List<Notes> recycleNotes = notesRepo.findByCreatedByAndIsDeletedTrue(userId);
 		List<NotesDto> noteDtoList = recycleNotes.stream().map(note ->mapper.map(note, NotesDto.class)).toList();
 		return noteDtoList;
 	}
 
 	@Override
-	public void hardDeleteNotes(Integer id) throws Exception {
-
-		 Notes notes= notesRepo.findById(id)
+	public void hardDeleteNotes(Integer userId) throws Exception {
+		 Notes notes= notesRepo.findById(userId)
 		.orElseThrow(() -> new ResourceNotFoundException("Notes not found"));
 		 
 		 if(notes.getIsDeleted()) {
@@ -239,8 +257,8 @@ public class NotesServiceImpl implements NotesService {
 	}
 
 	@Override
-	public void emptyRecycleBin(int userId) {
-
+	public void emptyRecycleBin() {
+		Integer userId = CommonUtil.getLoggedInUser().getId();
 		List<Notes> recycleNotes = notesRepo.findByCreatedByAndIsDeletedTrue(userId);
 		if(!CollectionUtils.isEmpty(recycleNotes)) {
 			notesRepo.deleteAll(recycleNotes);
