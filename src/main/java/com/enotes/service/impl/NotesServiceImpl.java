@@ -33,6 +33,7 @@ import com.enotes.dto.NotesResponse;
 import com.enotes.entity.FavouriteNote;
 import com.enotes.entity.FileDetails;
 import com.enotes.entity.Notes;
+import com.enotes.exception.ExistDataException;
 import com.enotes.exception.ResourceNotFoundException;
 import com.enotes.repository.CategoryRepository;
 import com.enotes.repository.FavouriteNoteRepository;
@@ -73,7 +74,7 @@ public class NotesServiceImpl implements NotesService {
 		notesDto.setDeletedOn(null);
 
 		// update if id is given in request
-		if (!ObjectUtils.isEmpty(notesDto)) {
+		if (!ObjectUtils.isEmpty(notesDto.getId())) {
 			updateNotes(notesDto, file);
 		}
 
@@ -192,7 +193,7 @@ public class NotesServiceImpl implements NotesService {
 	public NotesResponse getAllNotesByUser(Integer pageNo, Integer pageSize) {
 		Integer userId = CommonUtil.getLoggedInUser().getId();
 		// 10 - 5,5 - 2 pages
-		org.springframework.data.domain.Pageable pageable = PageRequest.of(pageNo, pageSize);
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
 		Page<Notes> pageNotes = notesRepo.findByCreatedByAndIsDeletedFalse(userId, pageable);
 
 		List<NotesDto> notesDto = pageNotes.get().map(n -> mapper.map(n, NotesDto.class)).toList();

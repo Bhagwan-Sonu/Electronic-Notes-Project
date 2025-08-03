@@ -34,7 +34,7 @@ public class NotesDto {
 
 	private Boolean isDeleted;
 
-	private java.util.Date deletedOn;
+	private Date deletedOn;
 
 	@AllArgsConstructor
 	@NoArgsConstructor

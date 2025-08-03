@@ -3,7 +3,6 @@ package com.enotes.service.impl;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.catalina.authenticator.SpnegoAuthenticator.AuthenticateAction;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
